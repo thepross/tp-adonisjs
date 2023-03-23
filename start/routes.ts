@@ -19,7 +19,27 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 Route.get('/', async ({ view }) => {
   return view.render('welcome')
 })
+
+Route.get('/news', async ({view}) => {
+  // fetch data from sql
+  const articles = await Database.from('articles').select("*");
+  return view.render('news.view', {articles})
+}).as('news.view')
+
+Route.post('/news', ({ request }) => {
+  const { email, password } = request.body()
+  return { email, password }
+}).as('news.post')
+
+Route.patch('/news/:id', ({ params }) => {
+  console.log(params)
+  return { params }
+}).where('id', {
+  match: /^[0-9]+$/,
+  cast: (id) => Number(id),
+}).as('news.patch')
