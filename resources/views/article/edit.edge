@@ -1,0 +1,48 @@
+@layout('layouts/main') 
+
+@section('content')
+
+<div class="m-auto mt-5">
+    <form
+    action="{{ route('article.update', [article.slug]) }}?_method=PATCH"
+    method="POST"
+    class="container col-lg-6"
+    >
+    <h1>Modificar articulo</h1>
+    {{ csrfField() }}
+
+    <div class="mb-3">
+      <label for="title" class="form-label">Titulo del Articulo</label>
+      <input type="text" id="title" name="title" class="form-control" placeholder="Titulo" value="{{ article.title }}" />
+    </div>
+    @if(flashMessages.has('errors.title'))
+    <p>{{ flashMessages.get('errors.title') }}</p>
+    @end
+    <div class="mb-3">
+      <label for="image" class="form-label">Imagen</label>
+      <input type="file" name="image" id="image" class="form-control" />
+    </div>
+    @if(flashMessages.has('errors.image'))
+    <p>{{ flashMessages.get('errors.image') }}</p>
+    @end
+    <div class="mb-3">
+        <label for="content" class="form-label">Contenido</label>
+        <textarea
+      name="content"
+      id="content"
+      cols="30"
+      rows="10"
+      class="form-control"
+      placeholder="Contenido del articulo"
+    >{{ article.content }}</textarea>
+    </div>
+    @if(flashMessages.has('errors.content'))
+    <p>{{ flashMessages.get('errors.content') }}</p>
+    @end
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Modificar</button>
+    </div>
+  </form>
+</div>
+
+@end

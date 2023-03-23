@@ -1,0 +1,30 @@
+@layout('layouts/main')
+
+@section('content')
+
+<h1>Crear nuevos articulos</h1>
+    <form action="{{ route('article.store') }}" method="POST" enctype="multipart/form-data">
+      {{ csrfField() }}
+      <input type="text" name="title" placeholder="Titulo" />
+      @if(flashMessages.has('errors.title'))
+        <p>{{ flashMessages.get('errors.title') }}</p>
+      @end
+
+      <input type="file" name="image" id="image" />
+      @if(flashMessages.has('errors.image'))
+        <p>{{ flashMessages.get('errors.image') }}</p>
+      @end
+      <textarea
+        name="content"
+        id="content"
+        cols="30"
+        rows="10"
+        placeholder="Contenido del articulo"
+      ></textarea>
+      @if(flashMessages.has('errors.content'))
+        <p>{{ flashMessages.get('errors.content') }}</p>
+      @end
+      <button type="submit">Crear</button>
+    </form>
+
+@end

@@ -19,27 +19,40 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import Database from '@ioc:Adonis/Lucid/Database'
 
-Route.get('/', async ({ view }) => {
-  return view.render('welcome')
+Route.on('/').render('welcome')
+Route.resource('article', 'ArticlesController')
+.paramFor('article', 'slug')
+.as('article')
+.middleware({
+  create: ["auth"],
+  edit: ["auth"],
+  store: ["auth"],
+  destroy: ["auth"],
+});
+
+
+
+// Route.get('/article', 'ArticlesController.view').as('article_view')
+
+// Route.get('/article/create', 'ArticlesController.create').as('article_create')
+// Route.post('/article/store', 'ArticlesController.store').as('article_store')
+// Route.get('/article/edit/:slug', 'ArticlesController.edit').as('article_edit')
+// Route.patch('/article/update/:slug', 'ArticlesController.update').as('article_update')
+// Route.delete('/article/delete/:slug', 'ArticlesController.destroy').as('article_delete')
+
+
+Route.on('/login').render('auth/login').as('login');
+
+Route.post('/login',async ({ auth, request, response }) => {
+  const email = request.input('email')
+  const password = request.input('password')
+
+  await auth.use('web').attempt(email, password)
+  return response.redirect('/');
 })
 
-Route.get('/news', async ({view}) => {
-  // fetch data from sql
-  const articles = await Database.from('articles').select("*");
-  return view.render('news.view', {articles})
-}).as('news.view')
-
-Route.post('/news', ({ request }) => {
-  const { email, password } = request.body()
-  return { email, password }
-}).as('news.post')
-
-Route.patch('/news/:id', ({ params }) => {
-  console.log(params)
-  return { params }
-}).where('id', {
-  match: /^[0-9]+$/,
-  cast: (id) => Number(id),
-}).as('news.patch')
+Route.post('/logout', async ({ auth, response }) => {
+  await auth.use('web').logout()
+  response.redirect('/login')
+}).as('logout')

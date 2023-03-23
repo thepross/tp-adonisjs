@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.string('title')
       table.string('slug').unique()
-      table.string('iamge')
+      table.string('image')
       table.text('content')
 
       /**
